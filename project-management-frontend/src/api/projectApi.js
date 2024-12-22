@@ -96,7 +96,7 @@ export const assignUserToProject = async (assignment) => {
 export const removeUserFromProject = async (projectId, userId) => {
   try {
     const token = getToken();
-    const response = await api.delete(`/projects/project-assignments/project/${projectId}/user/${userId}`, {
+    const response = await api.delete(`/projects/project-assignments/${projectId}/user/${userId}`, {
       headers: {
         Authorization: `Bearer ${token}`,
       },

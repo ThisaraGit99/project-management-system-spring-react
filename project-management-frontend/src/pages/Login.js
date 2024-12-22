@@ -2,6 +2,7 @@ import React, { useState, useContext } from 'react';
 import { useNavigate, Link } from 'react-router-dom';
 import api from '../api/api';
 import { AuthContext } from '../context/AuthContext'; // Import AuthContext
+import Navbar from '../components/Navbar';
 
 const Login = () => {
     const [email, setEmail] = useState('');
@@ -56,7 +57,10 @@ const Login = () => {
     };
 
     return (
+        <>
+        <Navbar />
         <div className="mt-32 flex items-center justify-center bg-gray-100 overflow-hidden">
+            
             <div className="bg-white p-8 rounded-lg shadow-lg w-full max-w-sm">
                 <h2 className="text-2xl font-bold text-center text-gray-700 mb-6">Login</h2>
                 {error && <p className="text-red-500 text-center mb-4">{error}</p>}
@@ -98,6 +102,7 @@ const Login = () => {
                 </p>
             </div>
         </div>
+        </>
     );
 };
 

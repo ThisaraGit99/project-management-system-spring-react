@@ -7,16 +7,20 @@ import Register from './pages/Register';
 import Dashboard from './pages/Dashboard';
 import Profile from './pages/Profile';
 import Projects from './pages/Projects';
+import ViewMembers from './pages/ViewMembers';
+import AddMembers from './pages/AddMembers';
+import ProjectDetails from './pages/ProjectDetails';
 import CreateProject from './pages/CreateProject'; // Import the CreateProject page
 import EditProject from './pages/EditProject'; // Import the EditProject page
 import PrivateRoute from './utils/PrivateRoute';
 import { AuthContext } from './context/AuthContext';
 import './index.css';
+import Test from './pages/test';
 
 const App = () => {
   return (
     <>
-      <Navbar />
+      {/* <Navbar /> */}
       {/* <Sidebar /> */}
       <Routes>
         <Route path="/" element={<Navigate to="/login" />} />
@@ -59,9 +63,47 @@ const App = () => {
           }
         />
 
-        {/* Edit Project Route */}
         <Route
-          path="/projects/edit/:projectId" // :projectId will be dynamic
+          path="/projects/details/:projectId"
+          element={
+            <PrivateRoute>
+              <ProjectDetails />
+            </PrivateRoute>
+          }
+        />
+
+        <Route
+          path="/members/view"
+          element={
+            <PrivateRoute>
+              <ViewMembers />
+            </PrivateRoute>
+          }
+
+        />
+
+        <Route
+          path="/members/add"
+          element={
+            <PrivateRoute>
+              <AddMembers />
+            </PrivateRoute>
+          }
+
+        />
+
+        <Route
+          path="/test"
+          element={
+            <PrivateRoute>
+              <Test />
+            </PrivateRoute>
+          }
+
+        />
+        
+        <Route
+          path="/projects/edit/:projectId" 
           element={
             <PrivateRoute>
               <EditProject />

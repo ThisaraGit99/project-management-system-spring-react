@@ -2,6 +2,7 @@ import React, { useState, useEffect, useContext } from 'react';
 import { AuthContext } from '../context/AuthContext';
 import axios from 'axios';
 import PasswordChangeModal from './PasswordChangeModal'; // Import PasswordChangeModal
+import Sidebar from '../components/Sidebar';
 
 const Profile = () => {
   const { isAuthenticated, logout } = useContext(AuthContext);
@@ -113,99 +114,110 @@ const Profile = () => {
   if (error) return <div>{error}</div>;
 
   return (
-    <div className="profile-container">
-      <h2 className="text-2xl font-bold mb-4">Profile</h2>
-      <div className="profile-info mb-6">
-        <div>
-          <p>
-            <strong>Name:</strong>{' '}
-            {isEditing ? (
-              <input
-                type="text"
-                name="name"
-                defaultValue={user.name}
-                onChange={handleInputChange}
-                className="border p-2 w-full"
-              />
-            ) : (
-              user.name
-            )}
-          </p>
-          <p>
-            <strong>Email:</strong>{' '}
-            {isEditing ? (
-              <input
-                type="email"
-                name="email"
-                defaultValue={user.email}
-                onChange={handleInputChange}
-                className="border p-2 w-full"
-              />
-            ) : (
-              user.email
-            )}
-          </p>
-          <p>
-            <strong>Role:</strong> {user.role}
-          </p>
-        </div>
-      </div>
-
-<div className='grid grid-cols-3'>
-<div className="">
-        {isEditing ? (
-          <>
-            <button
-              onClick={handleSaveChanges}
-              className="bg-blue-500 text-white px-4 py-2 rounded-md"
-            >
-              Save Changes
-            </button>
-            <button
-              onClick={handleCancel}
-              className="bg-gray-500 text-white px-4 py-2 rounded-md"
-            >
-              Cancel
-            </button>
-          </>
-        ) : (
-          <button
-            onClick={() => setIsEditing(true)}
-            className="bg-yellow-500 text-white px-4 py-2 rounded-md"
-          >
-            Edit Profile
-          </button>
-        )}
-      </div>
-
-      <div className="mt-6">
-        <button
-          onClick={openPasswordModal}
-          className="bg-blue-500 text-white px-4 py-2 rounded-md"
-        >
-          Change Password
-        </button>
-      </div>
-
+    <div className="max-w-3xl mx-auto p-6 bg-white rounded-lg shadow-lg">
+      <Sidebar />
+      <h2 className="text-3xl font-bold text-center text-gray-800 mb-6">Profile</h2>
       
+      <div className="profile-info space-y-6">
+        {/* User Information */}
+        <div className="bg-gray-50 p-4 rounded-md shadow-sm">
+          <div className="space-y-4">
+            <div>
+              <p className="font-semibold text-gray-700">Name:</p>
+              {isEditing ? (
+                <input
+                  type="text"
+                  name="name"
+                  defaultValue={user.name}
+                  onChange={handleInputChange}
+                  className="w-full p-3 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+                />
+              ) : (
+                <p className="text-gray-700">{user.name}</p>
+              )}
+            </div>
 
-      <div className="mt-6">
-        <button
-          onClick={logout}
-          className="bg-red-500 text-white px-4 py-2 rounded-md"
-        >
-          Logout
-        </button>
+            <div>
+              <p className="font-semibold text-gray-700">Email:</p>
+              {isEditing ? (
+                <input
+                  type="email"
+                  name="email"
+                  defaultValue={user.email}
+                  onChange={handleInputChange}
+                  className="w-full p-3 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+                />
+              ) : (
+                <p className="text-gray-700">{user.email}</p>
+              )}
+            </div>
+
+            <div>
+              <p className="font-semibold text-gray-700">Role:</p>
+              <p className="text-gray-700">{user.role}</p>
+            </div>
+          </div>
+        </div>
+
+        {/* Edit Profile Buttons */}
+        <div className="flex justify-between items-center mt-6 space-x-4">
+          <div className="flex space-x-4">
+            {isEditing ? (
+              <>
+                <button
+                  onClick={handleSaveChanges}
+                  className="bg-blue-500 text-white px-6 py-2 rounded-md hover:bg-blue-600 focus:outline-none"
+                >
+                  Save Changes
+                </button>
+                <button
+                  onClick={handleCancel}
+                  className="bg-gray-500 text-white px-6 py-2 rounded-md hover:bg-gray-600 focus:outline-none"
+                >
+                  Cancel
+                </button>
+              </>
+            ) : (
+              <button
+                onClick={() => setIsEditing(true)}
+                className="bg-yellow-500 text-white px-6 py-2 rounded-md hover:bg-yellow-600 focus:outline-none"
+              >
+                Edit Profile
+              </button>
+            )}
+          </div>
+
+          {/* Change Password Button */}
+          <div>
+            <button
+              onClick={openPasswordModal}
+              className="bg-blue-500 text-white px-6 py-2 rounded-md hover:bg-blue-600 focus:outline-none"
+            >
+              Change Password
+            </button>
+          </div>
+
+          {/* Logout Button */}
+          <div>
+            <button
+              onClick={logout}
+              className="bg-red-500 text-white px-6 py-2 rounded-md hover:bg-red-600 focus:outline-none"
+            >
+              Logout
+            </button>
+          </div>
+        </div>
+
+        
       </div>
-</div>
-{/* Password Change Modal */}
-<PasswordChangeModal
+
+      {/* Password Change Modal */}
+      <PasswordChangeModal
         isOpen={isPasswordModalOpen}
         onClose={closePasswordModal}
         userId={user.id}
         token={sessionStorage.getItem('token')}
       />
-      
     </div>
   );
 };

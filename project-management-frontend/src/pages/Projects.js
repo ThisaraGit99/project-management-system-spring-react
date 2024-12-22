@@ -1,16 +1,17 @@
 import React, { useState, useEffect, useContext } from 'react';
 import { getProjects } from '../api/projectApi';
-import { getUserById } from '../api/userApi';  // Import the getUserById function
+import { getUserById } from '../api/userApi';
 import { AuthContext } from '../context/AuthContext';
-import { AiOutlineLoading3Quarters } from 'react-icons/ai';
-import { useNavigate } from 'react-router-dom'; // For redirecting to edit page
+import { CircularProgress, Grid, Typography, Card, CardContent, Button, Box } from '@mui/material';
+import { useNavigate } from 'react-router-dom';
+import Sidebar from '../components/Sidebar';
 
 const Projects = () => {
   const { isAuthenticated, user } = useContext(AuthContext);
   const [projects, setProjects] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
-  const [users, setUsers] = useState({}); // Cache for users' names
+  const [users, setUsers] = useState({});
   const navigate = useNavigate();
 
   useEffect(() => {
@@ -20,11 +21,10 @@ const Projects = () => {
         setProjects(projectsData);
         setLoading(false);
 
-        // Fetch the user names for all projects
         const userNames = {};
         for (let project of projectsData) {
           if (project.createdBy) {
-            const userData = await getUserById(project.createdBy); // Fetch user data by ID
+            const userData = await getUserById(project.createdBy);
             userNames[project.createdBy] = userData.name;
           }
         }
@@ -41,63 +41,85 @@ const Projects = () => {
   }, [isAuthenticated, user]);
 
   const handleAssignClick = (projectId) => {
-    // Handle the assign logic here (for now, this is just a placeholder)
-    console.log('Assign button clicked for project:', projectId);
+    navigate(`/projects/details/${projectId}`);
   };
 
   const handleEditClick = (projectId) => {
-    // Navigate to the edit page for the project
     navigate(`/projects/edit/${projectId}`);
   };
 
   return (
-    <div className="max-w-6xl mx-auto p-6">
-      <h2 className="text-2xl font-semibold text-center mb-6">All Projects</h2>
+    <Box sx={{ padding: '24px', maxWidth: '1200px', margin: '0 auto' }}>
+      <Sidebar />
+      <Typography variant="h4" align="center" gutterBottom>
+        All Projects
+      </Typography>
 
       {loading ? (
-        <div className="flex justify-center items-center">
-          <AiOutlineLoading3Quarters className="animate-spin text-4xl" />
-          <p className="ml-3 text-lg">Loading projects...</p>
-        </div>
+        <Box sx={{ display: 'flex', justifyContent: 'center', alignItems: 'center', height: '60vh' }}>
+          <CircularProgress />
+          <Typography variant="h6" sx={{ marginLeft: '16px' }}>
+            Loading projects...
+          </Typography>
+        </Box>
       ) : error ? (
-        <p className="text-red-500 text-center">{error}</p>
+        <Typography variant="h6" color="error" align="center">
+          {error}
+        </Typography>
       ) : (
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
+        <Grid container spacing={4}>
           {projects.map((project) => (
-            <div key={project.id} className="bg-white border rounded-lg shadow-lg overflow-hidden">
-              <div className="p-6">
-                <h3 className="text-xl font-semibold mb-2">{project.projectName}</h3>
-                <p className="text-gray-700 mb-4">{project.description}</p>
-                <p className="text-gray-500 mb-2">
-                  <strong>Status:</strong> {project.status}
-                </p>
-                <p className="text-gray-500 mb-2">
-                  <strong>Created By:</strong> {users[project.createdBy] || 'Loading...'}
-                </p>
+            <Grid item xs={12} sm={6} key={project.id}>
+              <Card sx={{ borderRadius: 2, boxShadow: 3, overflow: 'hidden' }}>
+                <CardContent>
+                  <Typography variant="h6" gutterBottom>
+                    {project.projectName}
+                  </Typography>
+                  <Typography variant="body2" color="textSecondary" paragraph>
+                    {project.description}
+                  </Typography>
+                  <Typography variant="body2" color="textSecondary">
+                    <strong>Status:</strong> {project.status}
+                  </Typography>
+                  <Typography variant="body2" color="textSecondary">
+                    <strong>Created By:</strong> {users[project.createdBy] || 'Loading...'}
+                  </Typography>
 
-                {/* Button to assign user */}
-                {user && user.role === 'ADMIN' && (
-                  <>
-                    <button
-                      onClick={() => handleAssignClick(project.id)}
-                      className="mt-4 w-full py-2 px-4 bg-blue-500 text-white rounded-md hover:bg-blue-600 focus:outline-none"
-                    >
-                      Assign User
-                    </button>
-                    <button
-                      onClick={() => handleEditClick(project.id)}
-                      className="mt-4 w-full py-2 px-4 bg-yellow-500 text-white rounded-md hover:bg-yellow-600 focus:outline-none"
-                    >
-                      Edit Project
-                    </button>
-                  </>
-                )}
-              </div>
-            </div>
+                  {user && user.role === 'ADMIN' && (
+                    <Box sx={{ marginTop: 2, display: 'flex', gap: 1 }}>
+                      <Button
+                        variant="contained"
+                        sx={{
+                          backgroundColor: '#4CAF50',
+                          color: '#fff',
+                          flex: 1,
+                          '&:hover': { backgroundColor: '#45A049' },
+                        }}
+                        onClick={() => handleAssignClick(project.id)}
+                      >
+                        More Details
+                      </Button>
+                      <Button
+                        variant="contained"
+                        sx={{
+                          backgroundColor: '#FF9800',
+                          color: '#fff',
+                          flex: 1,
+                          '&:hover': { backgroundColor: '#FB8C00' },
+                        }}
+                        onClick={() => handleEditClick(project.id)}
+                      >
+                        Edit Project
+                      </Button>
+                    </Box>
+                  )}
+                </CardContent>
+              </Card>
+            </Grid>
           ))}
-        </div>
+        </Grid>
       )}
-    </div>
+    </Box>
   );
 };
 

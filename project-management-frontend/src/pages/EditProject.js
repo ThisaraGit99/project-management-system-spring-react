@@ -19,22 +19,26 @@ const EditProject = ({ onClose, onUpdate }) => {
       try {
         setLoading(true);
         setError(null);
-
+  
         if (!projectId) {
           setError('Project ID is missing.');
           return;
         }
-
+  
         const project = await getProjectDetails(projectId);
         setProjectName(project.projectName);
         setDescription(project.description);
         setStatus(project.status);
-
+  
         const assignments = await fetchAssignedUsers(projectId);
+        console.log('API Response for Assigned Users:', assignments);
         setAssignedUsers(assignments);
-
+  
+        // Log the state immediately after setting it
+        console.log('Assigned Users after state update:', assignments);
+        
+  
         const users = await fetchAllUsers();
-        // Filter out already assigned users
         const filteredUsers = users.filter(
           (user) => !assignments.some((assigned) => assigned.id === user.id)
         );
@@ -46,9 +50,10 @@ const EditProject = ({ onClose, onUpdate }) => {
         setLoading(false);
       }
     };
-
+  
     fetchData();
   }, [projectId]);
+  
 
   const handleSave = async () => {
     if (!projectName.trim()) {
@@ -105,14 +110,31 @@ const EditProject = ({ onClose, onUpdate }) => {
 
   const handleRemoveUser = async (userId) => {
     try {
+      console.log(`Removing user with ID: ${userId}`); // Debugging line
+  
+      // Call the API to remove the user from the project
       await removeUserFromProject(projectId, userId);
+  
+      // Find the user that is being removed from the assigned users list
       const removedUser = assignedUsers.find((user) => user.id === userId);
-      setAssignedUsers(assignedUsers.filter((user) => user.id !== userId));
-      if (removedUser) setAvailableUsers((prev) => [...prev, removedUser]);
+      console.log('Removed user:', removedUser); // Debugging line
+  
+      // Update state: remove the user from assigned users and add them back to available users
+      setAssignedUsers((prevAssignedUsers) => 
+        prevAssignedUsers.filter((user) => user.id !== userId)
+      );
+      if (removedUser) {
+        setAvailableUsers((prevAvailableUsers) => [...prevAvailableUsers, removedUser]);
+      }
+      console.log('Updated assigned users:', assignedUsers); // Debugging line
+      console.log('Updated available users:', availableUsers); // Debugging line
     } catch (error) {
+      // Display the error if the removal fails
       console.error('Error removing user:', error);
+      setError('Failed to remove user from project. Please try again.');
     }
   };
+  
 
   return (
     <div className="fixed inset-0 bg-black bg-opacity-50 flex justify-center items-center">

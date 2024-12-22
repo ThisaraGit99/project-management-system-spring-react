@@ -11,6 +11,9 @@ import org.springframework.stereotype.Service;
 import java.util.List;
 import java.util.Optional;
 
+import jakarta.persistence.EntityNotFoundException;
+import org.springframework.transaction.annotation.Transactional;
+
 @Service
 public class ProjectAssignmentService {
 
@@ -82,10 +85,14 @@ public class ProjectAssignmentService {
      * @param projectId ID of the project
      * @param userId ID of the user
      */
+    @Transactional
     public void removeUserFromProject(int projectId, int userId) {
+        // Check if the assignment exists
         if (!projectAssignmentRepository.existsByProjectIdAndUserId(projectId, userId)) {
-            throw new IllegalArgumentException("No such assignment exists.");
+            throw new EntityNotFoundException("Assignment with projectId " + projectId + " and userId " + userId + " does not exist.");
         }
+
+        // Perform the deletion
         projectAssignmentRepository.deleteByProjectIdAndUserId(projectId, userId);
     }
 }

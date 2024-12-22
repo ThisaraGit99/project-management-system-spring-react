@@ -1,8 +1,7 @@
 import React, { useState } from 'react';
 import { useNavigate, Link } from 'react-router-dom';
 import api from '../api/api'; // Make sure your api.js is set up to communicate with the backend
-import Navbar from '../components/Navbar';
-
+import Sidebar from '../components/Sidebar';
 
 const Register = () => {
   const [name, setName] = useState('');
@@ -47,9 +46,8 @@ const Register = () => {
   };
 
   return (
-    <>
-    <Navbar />
     <div className="mt-32 flex items-center justify-center bg-gray-100">
+      <Sidebar />
       <div className="bg-white p-8 rounded-lg shadow-md w-full max-w-md">
         <h2 className="text-2xl font-bold text-center mb-6">Register</h2>
         {error && <p className="text-red-500 text-sm text-center mb-4">{error}</p>}
@@ -95,14 +93,15 @@ const Register = () => {
             />
           </div>
           <div>
-            <input
-              type="text"
-              value="User" // Always set the value to "User"
-              readOnly
-              className="w-full p-3 border border-gray-300 rounded-md bg-gray-100 text-gray-500"
-            />
+            <select
+              value={role}
+              onChange={(e) => setRole(e.target.value)}
+              className="w-full p-3 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+            >
+              <option value="USER">User</option>
+              <option value="ADMIN">Admin</option>
+            </select>
           </div>
-
           <button
             type="submit"
             disabled={loading}
@@ -111,12 +110,8 @@ const Register = () => {
             {loading ? 'Registering...' : 'Register'}
           </button>
         </form>
-        <p className="mt-4 text-center">
-          Already have an account? <Link to="/login" className="text-blue-500">Login</Link>
-        </p>
       </div>
     </div>
-    </>
   );
 };
 

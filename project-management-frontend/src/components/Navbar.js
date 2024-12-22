@@ -10,14 +10,13 @@ const Navbar = () => {
       <div className="container mx-auto px-6 flex justify-between items-center">
         {/* Left side: Brand name */}
         <h1 className="text-2xl font-bold">
-          <Link to="/">Project Management</Link>
+          <Link to="/">Project Management System</Link>
         </h1>
 
         {/* Right side: Links or profile options */}
         <div className="flex items-center space-x-6">
-          {/* Dashboard link */}
-          <Link to="/dashboard" className="hover:text-gray-300">Dashboard</Link>
-
+          
+          
           {/* If user is authenticated, show profile and logout options */}
           {isAuthenticated ? (
             <>

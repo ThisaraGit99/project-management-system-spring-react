@@ -3,6 +3,7 @@ import { useNavigate } from 'react-router-dom';
 import { createProject } from '../api/projectApi';
 import { AuthContext } from '../context/AuthContext';
 import { AiOutlineLoading3Quarters, AiOutlineCheckCircle } from 'react-icons/ai';
+import Sidebar from '../components/Sidebar';
 
 const CreateProject = () => {
   const { user, isAuthenticated } = useContext(AuthContext);
@@ -59,6 +60,7 @@ const CreateProject = () => {
   
   return (
     <div className="max-w-4xl mx-auto p-6">
+      <Sidebar />
       <h2 className="text-2xl font-semibold text-center mb-6">Create New Project</h2>
       
       <form onSubmit={handleCreateProject} className="space-y-6">
